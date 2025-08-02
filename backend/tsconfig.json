@@ -1,0 +1,32 @@
+{
+  "compilerOptions": {
+    "module": "commonjs",
+    "declaration": true,
+    "removeComments": true,
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "allowSyntheticDefaultImports": true,
+    "target": "es2017",
+    "sourceMap": true,
+    "outDir": "./dist",
+    "baseUrl": "./",
+    "incremental": true,
+    "strict": true,
+    "rootDirs": [
+      "./",
+      "../apps",
+      "../core"
+    ],
+    "paths": {
+      "@nestjs/common": ["../backend/node_modules/@nestjs/common"],
+      "@nestjs/core": ["../backend/node_modules/@nestjs/core"],
+      "@nestjs/platform-express": ["../backend/node_modules/@nestjs/platform-express"],
+      "rxjs": ["../backend/node_modules/rxjs"],
+      "reflect-metadata": ["../backend/node_modules/reflect-metadata"],
+      "core/*": ["../core/*"],
+      "apps/*": ["../apps/*"]
+    }
+  },
+  "include": ["**/*.ts", "../apps/**/*.ts", "../core/**/*.ts"],
+  "exclude": ["node_modules", "dist"]
+}
