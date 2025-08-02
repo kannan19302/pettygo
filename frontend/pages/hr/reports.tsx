@@ -2,14 +2,15 @@ import React, { useState, useEffect } from 'react';
 import Head from 'next/head';
 import Sidebar from '../../components/hr/Sidebar';
 
-const demoReports = [
-  { id: 1, name: 'Monthly Attendance', type: 'Attendance', status: 'Ready' },
-  { id: 2, name: 'Payroll Summary', type: 'Payroll', status: 'Ready' },
-];
+// ...existing code...
 
 export default function Reports() {
+  const [reports, setReports] = useState<any[]>([]);
   const [role, setRole] = useState('');
-  useEffect(() => { setRole(localStorage.getItem('hr-role') || ''); }, []);
+  useEffect(() => {
+    setRole(localStorage.getItem('hr-role') || '');
+    fetch('/api/hr/reports').then(r => r.json()).then(setReports);
+  }, []);
 
   return (
     <>
@@ -23,9 +24,9 @@ export default function Reports() {
               <tr><th>Name</th><th>Type</th><th>Status</th></tr>
             </thead>
             <tbody>
-              {demoReports.length === 0 ? (
+              {reports.length === 0 ? (
                 <tr><td colSpan={3} style={{ textAlign: 'center', color: '#888' }}>No reports found.</td></tr>
-              ) : demoReports.map(r => (
+              ) : reports.map(r => (
                 <tr key={r.id}>
                   <td>{r.name}</td>
                   <td>{r.type}</td>

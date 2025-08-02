@@ -2,15 +2,15 @@ import React, { useState, useEffect } from 'react';
 import Head from 'next/head';
 import Sidebar from '../../components/hr/Sidebar';
 
-const initialDocs = [
-  { id: 1, employee: 'Alice Johnson', type: 'Offer Letter', name: 'Offer_Alice.pdf', status: 'Uploaded' },
-  { id: 2, employee: 'Bob Smith', type: 'ID Proof', name: 'ID_Bob.pdf', status: 'Uploaded' },
-];
+// ...existing code...
 
 export default function Documents() {
-  const [docs, setDocs] = useState(initialDocs);
+  const [docs, setDocs] = useState<any[]>([]);
   const [role, setRole] = useState('');
-  useEffect(() => { setRole(localStorage.getItem('hr-role') || ''); }, []);
+  useEffect(() => {
+    setRole(localStorage.getItem('hr-role') || '');
+    fetch('/api/hr/documents').then(r => r.json()).then(setDocs);
+  }, []);
 
   function uploadDoc() {
     alert('Document upload is not yet available. Would you like to create it now?');

@@ -2,16 +2,16 @@ import React, { useState, useEffect } from 'react';
 import Head from 'next/head';
 import Sidebar from '../../components/hr/Sidebar';
 
-const initialReviews = [
-  { id: 1, employee: 'Alice Johnson', score: 4.5, period: '2025 Q2', goal: 'Improve onboarding', feedback: 'Excellent', status: 'Completed' },
-  { id: 2, employee: 'Bob Smith', score: 4.0, period: '2025 Q2', goal: 'Increase hires', feedback: 'Good', status: 'Pending' },
-];
+// ...existing code...
 
 export default function Performance() {
-  const [reviews, setReviews] = useState(initialReviews);
+  const [reviews, setReviews] = useState<any[]>([]);
   const [search, setSearch] = useState('');
   const [role, setRole] = useState('');
-  useEffect(() => { setRole(localStorage.getItem('hr-role') || ''); }, []);
+  useEffect(() => {
+    setRole(localStorage.getItem('hr-role') || '');
+    fetch('/api/hr/performance').then(r => r.json()).then(setReviews);
+  }, []);
 
   const filtered = reviews.filter(r =>
     r.employee.toLowerCase().includes(search.toLowerCase()) ||

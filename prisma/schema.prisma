@@ -10,9 +10,108 @@ datasource db {
 }
 
 model User {
-  id       Int     @id @default(autoincrement())
-  username String  @unique
-  password String
-  role     String
+  id        Int      @id @default(autoincrement())
+  username  String   @unique
+  password  String
+  role      String
   createdAt DateTime @default(now())
+  employees Employee[]
+}
+
+model Employee {
+  id         Int      @id @default(autoincrement())
+  name       String
+  position   String
+  email      String   @unique
+  phone      String?
+  department String?
+  status     String   @default("Active")
+  joinDate   DateTime @default(now())
+  userId     Int?
+  user       User?    @relation(fields: [userId], references: [id])
+  attendances Attendance[]
+  leaves     Leave[]
+  shifts     Shift[]
+  payrolls   Payroll[]
+  documents  Document[]
+  performances Performance[]
+  selfServices SelfService[]
+}
+
+model Attendance {
+  id         Int      @id @default(autoincrement())
+  employee   Employee @relation(fields: [employeeId], references: [id])
+  employeeId Int
+  date       DateTime
+  status     String
+  checkIn    String?
+  checkOut   String?
+  location   String?
+  ip         String?
+  approved   Boolean  @default(false)
+}
+
+model Leave {
+  id         Int      @id @default(autoincrement())
+  employee   Employee @relation(fields: [employeeId], references: [id])
+  employeeId Int
+  type       String
+  from       DateTime
+  to         DateTime
+  status     String   @default("Pending")
+  balance    Int?
+}
+
+model Shift {
+  id         Int      @id @default(autoincrement())
+  employee   Employee @relation(fields: [employeeId], references: [id])
+  employeeId Int
+  name       String
+  start      String
+  end        String
+}
+
+model Payroll {
+  id         Int      @id @default(autoincrement())
+  employee   Employee @relation(fields: [employeeId], references: [id])
+  employeeId Int
+  period     String
+  amount     Float
+  status     String   @default("Processed")
+}
+
+model Document {
+  id         Int      @id @default(autoincrement())
+  employee   Employee @relation(fields: [employeeId], references: [id])
+  employeeId Int
+  type       String
+  name       String
+  status     String   @default("Uploaded")
+}
+
+model Performance {
+  id         Int      @id @default(autoincrement())
+  employee   Employee @relation(fields: [employeeId], references: [id])
+  employeeId Int
+  goal       String
+  score      Float?
+  period     String
+  feedback   String?
+  status     String   @default("Pending")
+}
+
+model SelfService {
+  id         Int      @id @default(autoincrement())
+  employee   Employee @relation(fields: [employeeId], references: [id])
+  employeeId Int
+  action     String
+  status     String   @default("Pending")
+}
+
+model Report {
+  id         Int      @id @default(autoincrement())
+  name       String
+  type       String
+  status     String   @default("Ready")
+  createdAt  DateTime @default(now())
 }

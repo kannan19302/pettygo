@@ -3,13 +3,10 @@ import Head from 'next/head';
 import { useRouter } from 'next/router';
 import Sidebar from '../../components/hr/Sidebar';
 
-const initialEmployees = [
-  { id: 1, name: 'Alice Johnson', position: 'HR Manager', status: 'Active', email: 'alice@pettygo.com', phone: '555-1234', department: 'HR', joinDate: '2022-01-10' },
-  { id: 2, name: 'Bob Smith', position: 'Recruiter', status: 'Active', email: 'bob@pettygo.com', phone: '555-5678', department: 'HR', joinDate: '2023-03-15' },
-];
+// ...existing code...
 
 export default function Employees() {
-  const [employees, setEmployees] = useState(initialEmployees);
+  const [employees, setEmployees] = useState<any[]>([]);
   const [name, setName] = useState('');
   const [position, setPosition] = useState('');
   const [email, setEmail] = useState('');
@@ -28,20 +25,29 @@ export default function Employees() {
       router.replace('/hr/login');
     } else {
       setRole(userRole || '');
+      fetch('/api/hr/employees').then(r => r.json()).then(setEmployees);
     }
   }, [router]);
 
-  function addEmployee(e: React.FormEvent) {
+  async function addEmployee(e: React.FormEvent) {
     e.preventDefault();
     if (!name || !position || !email || !phone || !department) return;
-    setEmployees([
-      ...employees,
-      { id: Date.now(), name, position, status: 'Active', email, phone, department, joinDate: new Date().toISOString().slice(0, 10) }
-    ]);
+    const res = await fetch('/api/hr/employees', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ name, position, email, phone, department })
+    });
+    const newEmp = await res.json();
+    setEmployees([...employees, newEmp]);
     setName(''); setPosition(''); setEmail(''); setPhone(''); setDepartment('');
   }
 
-  function removeEmployee(id: number) {
+  async function removeEmployee(id: number) {
+    await fetch('/api/hr/employees', {
+      method: 'DELETE',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ id })
+    });
     setEmployees(employees.filter(emp => emp.id !== id));
   }
 
@@ -56,9 +62,9 @@ export default function Employees() {
   }
 
   const filtered = employees.filter(emp =>
-    emp.name.toLowerCase().includes(search.toLowerCase()) ||
-    emp.position.toLowerCase().includes(search.toLowerCase()) ||
-    emp.department.toLowerCase().includes(search.toLowerCase())
+    emp.name?.toLowerCase().includes(search.toLowerCase()) ||
+    emp.position?.toLowerCase().includes(search.toLowerCase()) ||
+    emp.department?.toLowerCase().includes(search.toLowerCase())
   );
 
   return (

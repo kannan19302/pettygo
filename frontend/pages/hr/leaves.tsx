@@ -2,39 +2,58 @@ import React, { useState, useEffect } from 'react';
 import Head from 'next/head';
 import Sidebar from '../../components/hr/Sidebar';
 
-const initialLeaves = [
-  { id: 1, employee: 'Alice Johnson', type: 'Annual', from: '2025-08-10', to: '2025-08-12', status: 'Pending', balance: 12 },
-  { id: 2, employee: 'Bob Smith', type: 'Sick', from: '2025-08-05', to: '2025-08-06', status: 'Approved', balance: 8 },
-];
-const holidays = [
-  { date: '2025-08-15', name: 'Independence Day' },
-  { date: '2025-12-25', name: 'Christmas' },
-];
+// ...existing code...
 
 export default function Leaves() {
-  const [leaves, setLeaves] = useState(initialLeaves);
+  const [leaves, setLeaves] = useState<any[]>([]);
   const [role, setRole] = useState('');
   const [search, setSearch] = useState('');
   const [type, setType] = useState('Annual');
   const [from, setFrom] = useState('');
   const [to, setTo] = useState('');
-  useEffect(() => { setRole(localStorage.getItem('hr-role') || ''); }, []);
+  // Static holiday calendar (could be made dynamic in the future)
+  const holidays = [
+    { date: '2025-01-01', name: 'New Year\'s Day' },
+    { date: '2025-05-01', name: 'Labour Day' },
+    { date: '2025-12-25', name: 'Christmas Day' }
+  ];
+  useEffect(() => {
+    setRole(localStorage.getItem('hr-role') || '');
+    fetch('/api/hr/leaves').then(r => r.json()).then(setLeaves);
+  }, []);
 
-  function applyLeave(e: React.FormEvent) {
+  async function applyLeave(e: React.FormEvent) {
     e.preventDefault();
-    setLeaves([...leaves, { id: Date.now(), employee: 'You', type, from, to, status: 'Pending', balance: 10 }]);
+    const res = await fetch('/api/hr/leaves', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ employeeId: 1, type, from, to, status: 'Pending', balance: 10 })
+    });
+    const newLeave = await res.json();
+    setLeaves([...leaves, newLeave]);
     setType('Annual'); setFrom(''); setTo('');
   }
-  function approveLeave(id: number) {
-    setLeaves(leaves.map(l => l.id === id ? { ...l, status: 'Approved' } : l));
+  async function approveLeave(id: number) {
+    const res = await fetch('/api/hr/leaves', {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ id, status: 'Approved' })
+    });
+    const updated = await res.json();
+    setLeaves(leaves.map(l => l.id === id ? updated : l));
   }
-  function rejectLeave(id: number) {
-    setLeaves(leaves.map(l => l.id === id ? { ...l, status: 'Rejected' } : l));
+  async function rejectLeave(id: number) {
+    const res = await fetch('/api/hr/leaves', {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ id, status: 'Rejected' })
+    });
+    const updated = await res.json();
+    setLeaves(leaves.map(l => l.id === id ? updated : l));
   }
 
   const filtered = leaves.filter(l =>
-    l.employee.toLowerCase().includes(search.toLowerCase()) ||
-    l.type.toLowerCase().includes(search.toLowerCase())
+    l.type?.toLowerCase().includes(search.toLowerCase())
   );
 
   return (

@@ -2,14 +2,15 @@ import React, { useState, useEffect } from 'react';
 import Head from 'next/head';
 import Sidebar from '../../components/hr/Sidebar';
 
-const selfService = [
-  { id: 1, employee: 'Alice Johnson', action: 'Update Address', status: 'Completed' },
-  { id: 2, employee: 'Bob Smith', action: 'Request Leave', status: 'Pending' },
-];
+// ...existing code...
 
 export default function SelfService() {
+  const [selfService, setSelfService] = useState<any[]>([]);
   const [role, setRole] = useState('');
-  useEffect(() => { setRole(localStorage.getItem('hr-role') || ''); }, []);
+  useEffect(() => {
+    setRole(localStorage.getItem('hr-role') || '');
+    fetch('/api/hr/self-service').then(r => r.json()).then(setSelfService);
+  }, []);
 
   function updateProfile() {
     alert('Profile update is not yet available. Would you like to create it now?');

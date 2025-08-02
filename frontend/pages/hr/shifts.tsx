@@ -2,18 +2,24 @@ import React, { useState, useEffect } from 'react';
 import Head from 'next/head';
 import Sidebar from '../../components/hr/Sidebar';
 
-const initialShifts = [
-  { id: 1, name: 'Morning', start: '09:00', end: '17:00', assigned: ['Alice Johnson'] },
-  { id: 2, name: 'Evening', start: '13:00', end: '21:00', assigned: ['Bob Smith'] },
-];
+// ...existing code...
 
 export default function Shifts() {
-  const [shifts, setShifts] = useState(initialShifts);
+  const [shifts, setShifts] = useState<any[]>([]);
   const [role, setRole] = useState('');
-  useEffect(() => { setRole(localStorage.getItem('hr-role') || ''); }, []);
+  useEffect(() => {
+    setRole(localStorage.getItem('hr-role') || '');
+    fetch('/api/hr/shifts').then(r => r.json()).then(setShifts);
+  }, []);
 
-  function assignShift(id: number, employee: string) {
-    setShifts(shifts.map(s => s.id === id ? { ...s, assigned: [...s.assigned, employee] } : s));
+  async function assignShift(id: number, employeeId: number) {
+    const res = await fetch('/api/hr/shifts', {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ id, employeeId })
+    });
+    const updated = await res.json();
+    setShifts(shifts.map(s => s.id === id ? updated : s));
   }
 
   return (
