@@ -1,11 +1,22 @@
 
-export class EmailDto {
-  id?: number;
-  subject: string;
-  body: string;
-  to: string;
-  from: string;
-  sentAt?: Date;
-  relatedTo?: string;
-  createdAt?: Date;
+export class CreateEmailDto {
+  constructor(
+    public subject: string,
+    public body: string,
+    public to: string,
+    public from: string,
+    public sentAt?: Date,
+    public relatedTo?: string
+  ) {}
+}
+
+export class UpdateEmailDto {
+  constructor(
+    public subject?: string,
+    public body?: string,
+    public to?: string,
+    public from?: string,
+    public sentAt?: Date,
+    public relatedTo?: string
+  ) {}
 }

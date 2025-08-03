@@ -1,4 +1,3 @@
-
 export class CreateLeadDto {
   firstName: string;
   lastName: string;

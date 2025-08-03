@@ -11,3 +11,29 @@ export class LeadDto {
   ownerId?: number;
   createdAt?: Date;
 }
+
+export class CreateLeadDto {
+  constructor(
+    public firstName: string,
+    public lastName: string,
+    public email?: string,
+    public phone?: string,
+    public company?: string,
+    public status?: string,
+    public source?: string,
+    public ownerId?: number
+  ) {}
+}
+
+export class UpdateLeadDto {
+  constructor(
+    public firstName?: string,
+    public lastName?: string,
+    public email?: string,
+    public phone?: string,
+    public company?: string,
+    public status?: string,
+    public source?: string,
+    public ownerId?: number
+  ) {}
+}

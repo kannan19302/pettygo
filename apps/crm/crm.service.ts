@@ -1,183 +1,155 @@
 import { Injectable } from '@nestjs/common';
-import { CreateLeadDto, UpdateLeadDto } from './dto';
-import { Lead, Note, Activity } from './entities/lead.entity';
-import { Contact } from './entities/contact.entity';
-import { Account } from './entities/account.entity';
-import { Deal } from './entities/deal.entity';
-import { PipelineStage } from './entities/pipeline.entity';
-import { EmailLog } from './entities/email.entity';
-import { AnalyticsEvent } from './entities/analytics.entity';
+import { PrismaClient } from '@prisma/client';
+import { CreateLeadDto, UpdateLeadDto } from './dto/lead.dto';
+import { CreateContactDto, UpdateContactDto } from './dto/contact.dto';
+import { CreateAccountDto, UpdateAccountDto } from './dto/account.dto';
+import { CreateDealDto, UpdateDealDto } from './dto/deal.dto';
+import { CreateActivityDto, UpdateActivityDto } from './dto/activity.dto';
+import { CreateEmailDto, UpdateEmailDto } from './dto/email.dto';
+import { CreatePipelineDto, UpdatePipelineDto } from './dto/pipeline.dto';
 
 @Injectable()
 export class CrmService {
-  // ...existing code...
-
-
-  findAll() {
-    return this.leads;
-  }
-
-  findOne(id: number) {
-    return this.leads.find(l => l.id === id);
-  }
-  private leads: Lead[] = [];
-  private contacts: Contact[] = [];
-  private accounts: Account[] = [];
-  private deals: Deal[] = [];
-  private pipeline: PipelineStage[] = [];
-  private activities: Activity[] = [];
-  private notes: Note[] = [];
-  private emails: EmailLog[] = [];
-  private analytics: AnalyticsEvent[] = [];
+  private prisma = new PrismaClient();
 
   // --- Leads ---
-  createLead(createLeadDto: CreateLeadDto): Lead {
-    const lead = new Lead(
-      Date.now(),
-      createLeadDto.name,
-      createLeadDto.email,
-      createLeadDto.company,
-      createLeadDto.phone,
-      createLeadDto.status,
-      createLeadDto.source,
-      createLeadDto.ownerId,
-      new Date(),
-      new Date(),
-      [],
-      []
-    );
-    this.leads.push(lead);
-    return lead;
+  async createLead(createLeadDto: CreateLeadDto) {
+    return await this.prisma.lead.create({ data: { ...createLeadDto } });
   }
-  getLeads(): Lead[] { return this.leads; }
-  getLead(id: number): Lead | undefined { return this.leads.find(l => l.id === id); }
-  updateLead(id: number, dto: UpdateLeadDto): Lead | undefined {
-    const lead = this.getLead(id);
-    if (lead) Object.assign(lead, dto, { updatedAt: new Date() });
-    return lead;
+  async getLeads() {
+    return await this.prisma.lead.findMany();
   }
-  deleteLead(id: number) {
-    this.leads = this.leads.filter(l => l.id !== id);
+  async getLead(id: number) {
+    return await this.prisma.lead.findUnique({ where: { id } });
+  }
+  async updateLead(id: number, dto: UpdateLeadDto) {
+    return await this.prisma.lead.update({ where: { id }, data: dto });
+  }
+  async deleteLead(id: number) {
+    await this.prisma.lead.delete({ where: { id } });
     return { deleted: true };
   }
 
   // --- Contacts ---
-  createContact(contact: Contact): Contact {
-    this.contacts.push(contact);
-    return contact;
+  async createContact(contact: CreateContactDto) {
+    return await this.prisma.contact.create({ data: { ...contact } });
   }
-  getContacts(): Contact[] { return this.contacts; }
-  getContact(id: number): Contact | undefined { return this.contacts.find(c => c.id === id); }
-  updateContact(id: number, update: Partial<Contact>): Contact | undefined {
-    const contact = this.getContact(id);
-    if (contact) Object.assign(contact, update, { updatedAt: new Date() });
-    return contact;
+  async getContacts() {
+    return await this.prisma.contact.findMany();
   }
-  deleteContact(id: number) {
-    this.contacts = this.contacts.filter(c => c.id !== id);
+  async getContact(id: number) {
+    return await this.prisma.contact.findUnique({ where: { id } });
+  }
+  async updateContact(id: number, update: UpdateContactDto) {
+    return await this.prisma.contact.update({ where: { id }, data: { ...update } });
+  }
+  async deleteContact(id: number) {
+    await this.prisma.contact.delete({ where: { id } });
     return { deleted: true };
   }
 
   // --- Accounts ---
-  createAccount(account: Account): Account {
-    this.accounts.push(account);
-    return account;
+  async createAccount(account: CreateAccountDto) {
+    return await this.prisma.account.create({ data: { ...account } });
   }
-  getAccounts(): Account[] { return this.accounts; }
-  getAccount(id: number): Account | undefined { return this.accounts.find(a => a.id === id); }
-  updateAccount(id: number, update: Partial<Account>): Account | undefined {
-    const account = this.getAccount(id);
-    if (account) Object.assign(account, update, { updatedAt: new Date() });
-    return account;
+  async getAccounts() {
+    return await this.prisma.account.findMany();
   }
-  deleteAccount(id: number) {
-    this.accounts = this.accounts.filter(a => a.id !== id);
+  async getAccount(id: number) {
+    return await this.prisma.account.findUnique({ where: { id } });
+  }
+  async updateAccount(id: number, update: UpdateAccountDto) {
+    return await this.prisma.account.update({ where: { id }, data: { ...update } });
+  }
+  async deleteAccount(id: number) {
+    await this.prisma.account.delete({ where: { id } });
     return { deleted: true };
   }
 
   // --- Deals ---
-  createDeal(deal: Deal): Deal {
-    this.deals.push(deal);
-    return deal;
+  async createDeal(deal: CreateDealDto) {
+    return await this.prisma.deal.create({ data: { ...deal } });
   }
-  getDeals(): Deal[] { return this.deals; }
-  getDeal(id: number): Deal | undefined { return this.deals.find(d => d.id === id); }
-  updateDeal(id: number, update: Partial<Deal>): Deal | undefined {
-    const deal = this.getDeal(id);
-    if (deal) Object.assign(deal, update, { updatedAt: new Date() });
-    return deal;
+  async getDeals() {
+    return await this.prisma.deal.findMany();
   }
-  deleteDeal(id: number) {
-    this.deals = this.deals.filter(d => d.id !== id);
-    return { deleted: true };
+  async getDeal(id: number) {
+    return await this.prisma.deal.findUnique({ where: { id } });
   }
-
-  // --- Pipeline ---
-  createPipelineStage(stage: PipelineStage): PipelineStage {
-    this.pipeline.push(stage);
-    return stage;
+  async updateDeal(id: number, update: UpdateDealDto) {
+    return await this.prisma.deal.update({ where: { id }, data: { ...update } });
   }
-  getPipeline(): PipelineStage[] { return this.pipeline; }
-  updatePipelineStage(id: number, update: Partial<PipelineStage>): PipelineStage | undefined {
-    const stage = this.pipeline.find(s => s.id === id);
-    if (stage) Object.assign(stage, update);
-    return stage;
-  }
-  deletePipelineStage(id: number) {
-    this.pipeline = this.pipeline.filter(s => s.id !== id);
+  async deleteDeal(id: number) {
+    await this.prisma.deal.delete({ where: { id } });
     return { deleted: true };
   }
 
   // --- Activities ---
-  createActivity(activity: Activity): Activity {
-    this.activities.push(activity);
-    return activity;
+  async createActivity(activity: CreateActivityDto) {
+    return await this.prisma.activity.create({ data: { ...activity } });
   }
-  getActivities(): Activity[] { return this.activities; }
-  getActivity(id: number): Activity | undefined { return this.activities.find(a => a.id === id); }
-  updateActivity(id: number, update: Partial<Activity>): Activity | undefined {
-    const activity = this.getActivity(id);
-    if (activity) Object.assign(activity, update);
-    return activity;
+  async getActivities() {
+    return await this.prisma.activity.findMany();
   }
-  deleteActivity(id: number) {
-    this.activities = this.activities.filter(a => a.id !== id);
+  async getActivity(id: number) {
+    return await this.prisma.activity.findUnique({ where: { id } });
+  }
+  async updateActivity(id: number, update: UpdateActivityDto) {
+    return await this.prisma.activity.update({ where: { id }, data: { ...update } });
+  }
+  async deleteActivity(id: number) {
+    await this.prisma.activity.delete({ where: { id } });
     return { deleted: true };
   }
 
   // --- Notes ---
-  createNote(note: Note): Note {
-    this.notes.push(note);
-    return note;
+  async createNote(note: { content: string; ownerId?: number; relatedTo?: string }) {
+    return await this.prisma.note.create({ data: note });
   }
-  getNotes(): Note[] { return this.notes; }
-  getNote(id: number): Note | undefined { return this.notes.find(n => n.id === id); }
-  updateNote(id: number, update: Partial<Note>): Note | undefined {
-    const note = this.getNote(id);
-    if (note) Object.assign(note, update);
-    return note;
+  async getNotes() {
+    return await this.prisma.note.findMany();
   }
-  deleteNote(id: number) {
-    this.notes = this.notes.filter(n => n.id !== id);
+  async getNote(id: number) {
+    return await this.prisma.note.findUnique({ where: { id } });
+  }
+  async updateNote(id: number, update: Partial<{ content: string; ownerId?: number; relatedTo?: string }>) {
+    return await this.prisma.note.update({ where: { id }, data: update });
+  }
+  async deleteNote(id: number) {
+    await this.prisma.note.delete({ where: { id } });
     return { deleted: true };
   }
 
   // --- Email Logs ---
-  createEmail(email: EmailLog): EmailLog {
-    this.emails.push(email);
-    return email;
+  async createEmail(email: CreateEmailDto) {
+    return await this.prisma.email.create({ data: { ...email } });
   }
-  getEmails(): EmailLog[] { return this.emails; }
-  getEmail(id: number): EmailLog | undefined { return this.emails.find(e => e.id === id); }
-  deleteEmail(id: number) {
-    this.emails = this.emails.filter(e => e.id !== id);
+  async getEmails() {
+    return await this.prisma.email.findMany();
+  }
+  async getEmail(id: number) {
+    return await this.prisma.email.findUnique({ where: { id } });
+  }
+  async deleteEmail(id: number) {
+    await this.prisma.email.delete({ where: { id } });
+    return { deleted: true };
+  }
+
+  // --- Pipeline ---
+  async createPipelineStage(stage: CreatePipelineDto) {
+    return await this.prisma.pipelineStage.create({ data: { ...stage } });
+  }
+  async getPipeline() {
+    return await this.prisma.pipelineStage.findMany();
+  }
+  async updatePipelineStage(id: number, update: UpdatePipelineDto) {
+    return await this.prisma.pipelineStage.update({ where: { id }, data: { ...update } });
+  }
+  async deletePipelineStage(id: number) {
+    await this.prisma.pipelineStage.delete({ where: { id } });
     return { deleted: true };
   }
 
   // --- Analytics ---
-  createAnalyticsEvent(event: AnalyticsEvent): AnalyticsEvent {
-    this.analytics.push(event);
-    return event;
-  }
-  getAnalytics(): AnalyticsEvent[] { return this.analytics; }
+  // Analytics: Not present in Prisma schema, remove or refactor as needed
 }
