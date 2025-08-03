@@ -11,7 +11,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     const { username, password } = req.body;
     try {
       const user = await prisma.user.findUnique({ where: { username } });
-      if (user && user.password === password) {
+      if (user && await require('bcryptjs').compare(password, user.password)) {
         res.status(200).json({ success: true, role: user.role });
       } else {
         res.status(401).json({ success: false, message: 'Invalid credentials' });
@@ -30,7 +30,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       if (exists) {
         return res.status(409).json({ success: false, message: 'Username already exists' });
       }
-      await prisma.user.create({ data: { username, password, role } });
+      const hashedPassword = await require('bcryptjs').hash(password, 10);
+      await prisma.user.create({ data: { username, password: hashedPassword, role } });
       res.status(201).json({ success: true });
     } catch (e) {
       res.status(500).json({ success: false, message: 'Server error' });
