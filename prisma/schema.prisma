@@ -36,6 +36,19 @@ model Employee {
   documents  Document[]
   performances Performance[]
   selfServices SelfService[]
+  onboardings Onboarding[]
+  offboardings Offboarding[]
+  cases      Case[]
+  compensations Compensation[]
+  expenses   Expense[]
+  trainingEmployees TrainingEmployee[]
+  assets     Asset[]
+  compliance Compliance[]
+  customFormResponses CustomFormResponse[]
+  location   Location? @relation(fields: [locationId], references: [id])
+  locationId Int?
+  currency   Currency? @relation(fields: [currencyId], references: [id])
+  currencyId Int?
 }
 
 model Attendance {
@@ -114,4 +127,129 @@ model Report {
   type       String
   status     String   @default("Ready")
   createdAt  DateTime @default(now())
+}
+
+// Onboarding & Offboarding
+model Onboarding {
+  id         Int      @id @default(autoincrement())
+  employee   Employee @relation(fields: [employeeId], references: [id])
+  employeeId Int
+  startDate  DateTime
+  checklist  String?
+  status     String   @default("Initiated")
+}
+
+model Offboarding {
+  id         Int      @id @default(autoincrement())
+  employee   Employee @relation(fields: [employeeId], references: [id])
+  employeeId Int
+  endDate    DateTime
+  checklist  String?
+  status     String   @default("Initiated")
+}
+
+// Case Management (HR Helpdesk)
+model Case {
+  id         Int      @id @default(autoincrement())
+  employee   Employee @relation(fields: [employeeId], references: [id])
+  employeeId Int
+  subject    String
+  description String
+  status     String   @default("Open")
+  createdAt  DateTime @default(now())
+}
+
+// Compensation Management
+model Compensation {
+  id         Int      @id @default(autoincrement())
+  employee   Employee @relation(fields: [employeeId], references: [id])
+  employeeId Int
+  type       String
+  amount     Float
+  effectiveDate DateTime
+  status     String   @default("Active")
+}
+
+// Travel & Expense Management
+model Expense {
+  id         Int      @id @default(autoincrement())
+  employee   Employee @relation(fields: [employeeId], references: [id])
+  employeeId Int
+  type       String
+  amount     Float
+  description String?
+  status     String   @default("Pending")
+  submittedAt DateTime @default(now())
+}
+
+// Training & Development
+model Training {
+  id         Int      @id @default(autoincrement())
+  name       String
+  description String?
+  startDate  DateTime
+  endDate    DateTime
+  employees  TrainingEmployee[]
+}
+
+model TrainingEmployee {
+  id         Int      @id @default(autoincrement())
+  training   Training @relation(fields: [trainingId], references: [id])
+  trainingId Int
+  employee   Employee @relation(fields: [employeeId], references: [id])
+  employeeId Int
+  status     String   @default("Enrolled")
+}
+
+// Asset Management
+model Asset {
+  id         Int      @id @default(autoincrement())
+  name       String
+  type       String
+  assignedTo Employee? @relation(fields: [employeeId], references: [id])
+  employeeId Int?
+  status     String   @default("Available")
+}
+
+// Compliance Management
+model Compliance {
+  id         Int      @id @default(autoincrement())
+  policy     String
+  acknowledgedBy Employee? @relation(fields: [employeeId], references: [id])
+  employeeId Int?
+  acknowledgedAt DateTime?
+}
+
+// Custom Forms
+model CustomForm {
+  id         Int      @id @default(autoincrement())
+  name       String
+  fields     String   // JSON schema
+  responses  CustomFormResponse[]
+}
+
+model CustomFormResponse {
+  id         Int      @id @default(autoincrement())
+  form       CustomForm @relation(fields: [formId], references: [id])
+  formId     Int
+  employee   Employee @relation(fields: [employeeId], references: [id])
+  employeeId Int
+  response   String   // JSON
+  submittedAt DateTime @default(now())
+}
+
+// Multi-location & Multi-currency
+model Location {
+  id         Int      @id @default(autoincrement())
+  name       String
+  address    String?
+  employees  Employee[]
+}
+
+model Currency {
+  id         Int      @id @default(autoincrement())
+  code       String   @unique
+  name       String
+  symbol     String
+  employees  Employee[]
 }
