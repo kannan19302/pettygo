@@ -1,12 +1,9 @@
-
-export class Activity {
+export class Task {
   id: number;
-  type: string;
   subject: string;
   dueDate?: Date;
   status?: string;
   ownerId?: number;
-  dealId?: number;
-  contactId?: number;
+  relatedTo?: string;
   createdAt: Date;
 }

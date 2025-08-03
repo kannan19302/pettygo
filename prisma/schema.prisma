@@ -253,3 +253,229 @@ model Currency {
   symbol     String
   employees  Employee[]
 }
+
+// CRM MODULE
+model Lead {
+  id         Int      @id @default(autoincrement())
+  firstName  String
+  lastName   String
+  email      String?
+  phone      String?
+  company    String?
+  status     String?
+  source     String?
+  ownerId    Int?
+  createdAt  DateTime @default(now())
+}
+
+model Contact {
+  id         Int      @id @default(autoincrement())
+  firstName  String
+  lastName   String
+  email      String?
+  phone      String?
+  accountId  Int?
+  ownerId    Int?
+  createdAt  DateTime @default(now())
+}
+
+model Account {
+  id         Int      @id @default(autoincrement())
+  name       String
+  industry   String?
+  website    String?
+  phone      String?
+  ownerId    Int?
+  createdAt  DateTime @default(now())
+}
+
+model Deal {
+  id         Int      @id @default(autoincrement())
+  name       String
+  stage      String
+  amount     Float?
+  closeDate  DateTime?
+  accountId  Int?
+  contactId  Int?
+  ownerId    Int?
+  createdAt  DateTime @default(now())
+}
+
+model Activity {
+  id         Int      @id @default(autoincrement())
+  type       String
+  subject    String
+  dueDate    DateTime?
+  status     String?
+  ownerId    Int?
+  dealId     Int?
+  contactId  Int?
+  createdAt  DateTime @default(now())
+}
+
+model Product {
+  id         Int      @id @default(autoincrement())
+  name       String
+  code       String?
+  description String?
+  price      Float
+  createdAt  DateTime @default(now())
+}
+
+model PriceBook {
+  id         Int      @id @default(autoincrement())
+  name       String
+  description String?
+  createdAt  DateTime @default(now())
+}
+
+model Quote {
+  id         Int      @id @default(autoincrement())
+  subject    String
+  dealId     Int?
+  accountId  Int?
+  total      Float
+  status     String?
+  createdAt  DateTime @default(now())
+}
+
+model SalesOrder {
+  id         Int      @id @default(autoincrement())
+  subject    String
+  accountId  Int?
+  total      Float
+  status     String?
+  createdAt  DateTime @default(now())
+}
+
+model Invoice {
+  id         Int      @id @default(autoincrement())
+  subject    String
+  accountId  Int?
+  total      Float
+  status     String?
+  createdAt  DateTime @default(now())
+}
+
+model Campaign {
+  id         Int      @id @default(autoincrement())
+  name       String
+  type       String?
+  status     String?
+  startDate  DateTime?
+  endDate    DateTime?
+  createdAt  DateTime @default(now())
+}
+
+model CRMCase {
+  id         Int      @id @default(autoincrement())
+  subject    String
+  description String?
+  status     String?
+  contactId  Int?
+  accountId  Int?
+  createdAt  DateTime @default(now())
+}
+
+model Solution {
+  id         Int      @id @default(autoincrement())
+  title      String
+  content    String
+  createdAt  DateTime @default(now())
+}
+
+model Workflow {
+  id         Int      @id @default(autoincrement())
+  name       String
+  description String?
+  active     Boolean  @default(true)
+  createdAt  DateTime @default(now())
+}
+
+model Task {
+  id         Int      @id @default(autoincrement())
+  subject    String
+  dueDate    DateTime?
+  status     String?
+  ownerId    Int?
+  relatedTo  String?
+  createdAt  DateTime @default(now())
+}
+
+model Note {
+  id         Int      @id @default(autoincrement())
+  content    String
+  ownerId    Int?
+  relatedTo  String?
+  createdAt  DateTime @default(now())
+}
+
+model Email {
+  id         Int      @id @default(autoincrement())
+  subject    String
+  body       String
+  to         String
+  from       String
+  sentAt     DateTime?
+  relatedTo  String?
+  createdAt  DateTime @default(now())
+}
+
+model Call {
+  id         Int      @id @default(autoincrement())
+  subject    String
+  phone      String?
+  callType   String?
+  duration   Int?
+  status     String?
+  relatedTo  String?
+  createdAt  DateTime @default(now())
+}
+
+model Event {
+  id         Int      @id @default(autoincrement())
+  subject    String
+  startDate  DateTime
+  endDate    DateTime
+  location   String?
+  relatedTo  String?
+  createdAt  DateTime @default(now())
+}
+
+model CRMDocument {
+  id         Int      @id @default(autoincrement())
+  name       String
+  url        String
+  relatedTo  String?
+  createdAt  DateTime @default(now())
+}
+
+model CRMRole {
+  id         Int      @id @default(autoincrement())
+  name       String
+  description String?
+  createdAt  DateTime @default(now())
+}
+
+model CRMProfile {
+  id         Int      @id @default(autoincrement())
+  name       String
+  permissions String  // JSON
+  createdAt  DateTime @default(now())
+}
+
+model Territory {
+  id         Int      @id @default(autoincrement())
+  name       String
+  description String?
+  createdAt  DateTime @default(now())
+}
+
+model Automation {
+  id         Int      @id @default(autoincrement())
+  name       String
+  type       String
+  config     String   // JSON
+  active     Boolean  @default(true)
+  createdAt  DateTime @default(now())
+}

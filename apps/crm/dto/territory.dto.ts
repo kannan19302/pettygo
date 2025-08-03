@@ -1,7 +1,6 @@
-
-export class PipelineStageDto {
+export class TerritoryDto {
   id?: number;
   name: string;
-  order: number;
   description?: string;
+  createdAt?: Date;
 }

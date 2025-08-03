@@ -1,7 +1,6 @@
-
-export class PipelineStage {
+export class CRMRole {
   id: number;
   name: string;
-  order: number;
   description?: string;
+  createdAt: Date;
 }

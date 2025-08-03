@@ -1,7 +1,6 @@
-
-export class PipelineStageDto {
+export class CRMRoleDto {
   id?: number;
   name: string;
-  order: number;
   description?: string;
+  createdAt?: Date;
 }

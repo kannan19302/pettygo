@@ -1,7 +1,6 @@
-
-export class PipelineStageDto {
+export class PriceBookDto {
   id?: number;
   name: string;
-  order: number;
   description?: string;
+  createdAt?: Date;
 }

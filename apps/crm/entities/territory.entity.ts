@@ -1,7 +1,6 @@
-
-export class PipelineStage {
+export class Territory {
   id: number;
   name: string;
-  order: number;
   description?: string;
+  createdAt: Date;
 }

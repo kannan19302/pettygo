@@ -1,12 +1,11 @@
+
 export class Contact {
-  constructor(
-    public id: number,
-    public name: string,
-    public email: string,
-    public phone?: string,
-    public accountId?: number,
-    public leadId?: number,
-    public createdAt: Date = new Date(),
-    public updatedAt: Date = new Date(),
-  ) {}
+  id: number;
+  firstName: string;
+  lastName: string;
+  email?: string;
+  phone?: string;
+  accountId?: number;
+  ownerId?: number;
+  createdAt: Date;
 }
