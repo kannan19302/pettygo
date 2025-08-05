@@ -1,14 +1,15 @@
-import React from 'react';
 import Head from 'next/head';
-
-export default function Sales() {
+import Sidebar from '../components/sales/Sidebar';
+export default function SalesDashboard() {
   return (
     <>
       <Head><title>Sales | PettyGo ERP</title></Head>
-      <div className="erp-module-page">
-        <img src="/icons/sales.svg" alt="Sales" className="erp-module-page-icon" />
-        <h1>Sales</h1>
-        <p>Sales Orders, Quotes, and Invoicing module coming soon.</p>
+      <div style={{ display: 'flex', minHeight: '100vh', background: 'var(--erp-bg, #f8fafc)' }}>
+        <Sidebar active="/sales" />
+        <main style={{ flex: 1, padding: '2rem' }}>
+          <h1>Sales Dashboard</h1>
+          <p>Welcome to the sales module. Use the sidebar to navigate features.</p>
+        </main>
       </div>
     </>
   );
