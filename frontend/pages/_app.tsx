@@ -15,7 +15,7 @@ function MyApp({ Component, pageProps }: AppProps) {
       }
       // If already logged in and on login/register, redirect to dashboard
       if (isAuth && publicPaths.includes(router.pathname)) {
-        router.replace('/');
+        router.replace('/pettygo');
       }
     }
   }, [router.pathname]);

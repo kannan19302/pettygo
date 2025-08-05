@@ -2,6 +2,7 @@ import React from 'react';
 import Link from 'next/link';
 
 const navItems = [
+  { label: 'Go to Home', href: '/pettygo', icon: '🏠' },
   { label: 'Dashboard', href: '/inventory', icon: '📦' },
   { label: 'Items', href: '/inventory/items', icon: '🗃️' },
   { label: 'Reports', href: '/inventory/reports', icon: '📈' },
