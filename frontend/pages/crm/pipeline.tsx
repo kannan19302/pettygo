@@ -1,3 +1,5 @@
+import Sidebar from '../../components/crm/Sidebar';
+import React, { useState, useEffect } from 'react';
 // Removed duplicate import
 
 export default function PipelinePage() {

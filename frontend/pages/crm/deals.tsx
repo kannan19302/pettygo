@@ -1,3 +1,4 @@
+import Sidebar from '../../components/crm/Sidebar';
 import React, { useEffect, useState } from 'react';
 
 export default function DealsPage() {

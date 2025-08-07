@@ -1,8 +1,10 @@
 
 import '../styles/globals.css';
 import type { AppProps } from 'next/app';
+import { SWRConfig } from 'swr';
 import { useRouter } from 'next/router';
 import { useEffect } from 'react';
+
 
 function MyApp({ Component, pageProps }: AppProps) {
   const router = useRouter();
@@ -19,7 +21,11 @@ function MyApp({ Component, pageProps }: AppProps) {
       }
     }
   }, [router.pathname]);
-  return <Component {...pageProps} />;
+  return (
+    <SWRConfig value={{ fetcher: (url: string) => fetch(url).then(res => res.json()) }}>
+      <Component {...pageProps} />
+    </SWRConfig>
+  );
 }
 
 export default MyApp;

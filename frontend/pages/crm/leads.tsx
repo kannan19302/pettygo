@@ -1,3 +1,5 @@
+import Sidebar from '../../components/crm/Sidebar';
+import React, { useState, useEffect } from 'react';
 
 export default function LeadsPage() {
   const [leads, setLeads] = useState<any[]>([]);

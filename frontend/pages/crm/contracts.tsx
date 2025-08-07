@@ -1,4 +1,6 @@
-// Removed duplicate import
+
+import React, { useState, useEffect } from 'react';
+import Sidebar from '../../components/crm/Sidebar';
 
 export default function ContractsPage() {
   const [contracts, setContracts] = useState<any[]>([]);

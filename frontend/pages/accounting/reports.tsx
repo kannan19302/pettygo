@@ -2,11 +2,12 @@ import React, { useEffect, useState } from 'react';
 import Head from 'next/head';
 import Sidebar from '../../components/accounting/Sidebar';
 
-import type { Account } from '../../../apps/accounting/entities/account.entity';
+type AccountWithBalance = import('../../../apps/accounting/entities/account.entity').Account & { balance?: number };
+
 export default function Reports() {
-  const [balanceSheet, setBalanceSheet] = useState<{ assets: Account[]; liabilities: Account[]; equity: Account[] }>({ assets: [], liabilities: [], equity: [] });
-  const [incomeStatement, setIncomeStatement] = useState<{ income: Account[]; expenses: Account[] }>({ income: [], expenses: [] });
-  const [trialBalance, setTrialBalance] = useState<Account[]>([]);
+  const [balanceSheet, setBalanceSheet] = useState<{ assets: AccountWithBalance[]; liabilities: AccountWithBalance[]; equity: AccountWithBalance[] }>({ assets: [], liabilities: [], equity: [] });
+  const [incomeStatement, setIncomeStatement] = useState<{ income: AccountWithBalance[]; expenses: AccountWithBalance[] }>({ income: [], expenses: [] });
+  const [trialBalance, setTrialBalance] = useState<AccountWithBalance[]>([]);
 
   useEffect(() => {
     fetch('/api/accounting/reports/balance-sheet').then(r => r.json()).then(setBalanceSheet);

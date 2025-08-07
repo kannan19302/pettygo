@@ -1,3 +1,70 @@
+// --- Studio (Low-code/No-code) ---
+
+model StudioForm {
+  id          Int           @id @default(autoincrement())
+  name        String
+  description String?
+  fields      StudioFormField[]
+  version     Int           @default(1)
+  createdBy   Int?
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+}
+
+model StudioFormField {
+  id        Int        @id @default(autoincrement())
+  form      StudioForm @relation(fields: [formId], references: [id])
+  formId    Int
+  name      String
+  label     String
+  type      String     // e.g. text, number, select, date, etc.
+  required  Boolean    @default(false)
+  options   String?    // JSON for select options, etc.
+  order     Int        @default(0)
+}
+
+model StudioWorkflow {
+  id          Int                @id @default(autoincrement())
+  name        String
+  description String?
+  steps       StudioWorkflowStep[]
+  version     Int                @default(1)
+  active      Boolean            @default(true)
+  createdBy   Int?
+  createdAt   DateTime           @default(now())
+  updatedAt   DateTime           @updatedAt
+}
+
+model StudioWorkflowStep {
+  id          Int              @id @default(autoincrement())
+  workflow    StudioWorkflow   @relation(fields: [workflowId], references: [id])
+  workflowId  Int
+  name        String
+  type        String           // e.g. trigger, action, condition
+  config      String           // JSON config for the step
+  order       Int              @default(0)
+}
+
+model StudioUIConfig {
+  id        Int      @id @default(autoincrement())
+  userId    Int?
+  config    String   // JSON for UI layout, theme, etc.
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+// Enhanced Automation for Studio
+model StudioAutomation {
+  id        Int      @id @default(autoincrement())
+  name      String
+  trigger   String
+  action    String
+  config    String?  // JSON for advanced config
+  active    Boolean  @default(true)
+  createdBy Int?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
 // Prisma schema for PettyGo ERP users
 
 generator client {

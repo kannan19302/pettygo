@@ -44,7 +44,10 @@ export default function Shifts() {
                   <td>{s.assigned.join(', ')}</td>
                   <td>
                     {(role === 'admin' || role === 'superadmin') && (
-                      <button onClick={() => assignShift(s.id, 'You')}>Assign Me</button>
+                      <button onClick={() => {
+                        const empId = Number(localStorage.getItem('employeeId')) || 0;
+                        assignShift(s.id, empId);
+                      }}>Assign Me</button>
                     )}
                     {role === 'user' && <span>View</span>}
                   </td>

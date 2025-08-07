@@ -1,44 +1,110 @@
+
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { Automation } from './entities/automation.entity';
-import { CreateAutomationDto, UpdateAutomationDto } from './dto/automation.dto';
+import { PrismaClient } from '@prisma/client';
+import { StudioAutomation } from './entities/automation.entity';
+import { CreateStudioAutomationDto, UpdateStudioAutomationDto } from './dto/automation.dto';
+import { StudioForm, StudioFormField } from './entities/form.entity';
+import { CreateStudioFormDto, UpdateStudioFormDto } from './dto/form.dto';
+import { StudioWorkflow, StudioWorkflowStep } from './entities/workflow.entity';
+import { CreateStudioWorkflowDto, UpdateStudioWorkflowDto } from './dto/workflow.dto';
+import { StudioUIConfig } from './entities/ui-config.entity';
+import { CreateStudioUIConfigDto, UpdateStudioUIConfigDto } from './dto/ui-config.dto';
 
 @Injectable()
 export class StudioService {
-  private automations: Automation[] = [
-    { id: 1, name: 'Auto-assign Lead', trigger: 'Lead Created', action: 'Assign to Sales' },
-    { id: 2, name: 'Send Welcome Email', trigger: 'User Signup', action: 'Send Email' },
-  ];
-  private nextId = 3;
+  private prisma = new PrismaClient();
 
   getHello() {
     return { message: 'Welcome to Studio module!' };
   }
 
-  findAll(): Automation[] {
-    return this.automations;
+  // --- StudioAutomation CRUD ---
+  async findAllAutomations(): Promise<StudioAutomation[]> {
+    return this.prisma.studioAutomation.findMany();
   }
 
-  findOne(id: number): Automation {
-    const auto = this.automations.find(a => a.id === id);
+  async findAutomation(id: number): Promise<StudioAutomation> {
+    const auto = await this.prisma.studioAutomation.findUnique({ where: { id } });
     if (!auto) throw new NotFoundException('Automation not found');
     return auto;
   }
 
-  create(dto: CreateAutomationDto): Automation {
-    const auto: Automation = { id: this.nextId++, ...dto };
-    this.automations.push(auto);
-    return auto;
+  async createAutomation(dto: CreateStudioAutomationDto): Promise<StudioAutomation> {
+    return this.prisma.studioAutomation.create({ data: dto });
   }
 
-  update(id: number, dto: UpdateAutomationDto): Automation {
-    const auto = this.findOne(id);
-    Object.assign(auto, dto);
-    return auto;
+  async updateAutomation(id: number, dto: UpdateStudioAutomationDto): Promise<StudioAutomation> {
+    return this.prisma.studioAutomation.update({ where: { id }, data: dto });
   }
 
-  remove(id: number): void {
-    const idx = this.automations.findIndex(a => a.id === id);
-    if (idx === -1) throw new NotFoundException('Automation not found');
-    this.automations.splice(idx, 1);
+  async removeAutomation(id: number): Promise<void> {
+    await this.prisma.studioAutomation.delete({ where: { id } });
+  }
+
+  // --- StudioForm CRUD (scaffold) ---
+  async findAllForms(): Promise<StudioForm[]> {
+    return this.prisma.studioForm.findMany({ include: { fields: true } });
+  }
+  async findForm(id: number): Promise<StudioForm> {
+    return this.prisma.studioForm.findUnique({ where: { id }, include: { fields: true } });
+  }
+  async createForm(dto: CreateStudioFormDto): Promise<StudioForm> {
+    return this.prisma.studioForm.create({
+      data: {
+        name: dto.name,
+        description: dto.description,
+        fields: dto.fields ? { create: dto.fields } : undefined,
+      },
+      include: { fields: true },
+    });
+  }
+  async updateForm(id: number, dto: UpdateStudioFormDto): Promise<StudioForm> {
+    // For simplicity, not handling field updates here
+    return this.prisma.studioForm.update({ where: { id }, data: dto, include: { fields: true } });
+  }
+  async removeForm(id: number): Promise<void> {
+    await this.prisma.studioForm.delete({ where: { id } });
+  }
+
+  // --- StudioWorkflow CRUD (scaffold) ---
+  async findAllWorkflows(): Promise<StudioWorkflow[]> {
+    return this.prisma.studioWorkflow.findMany({ include: { steps: true } });
+  }
+  async findWorkflow(id: number): Promise<StudioWorkflow> {
+    return this.prisma.studioWorkflow.findUnique({ where: { id }, include: { steps: true } });
+  }
+  async createWorkflow(dto: CreateStudioWorkflowDto): Promise<StudioWorkflow> {
+    return this.prisma.studioWorkflow.create({
+      data: {
+        name: dto.name,
+        description: dto.description,
+        steps: dto.steps ? { create: dto.steps } : undefined,
+      },
+      include: { steps: true },
+    });
+  }
+  async updateWorkflow(id: number, dto: UpdateStudioWorkflowDto): Promise<StudioWorkflow> {
+    // For simplicity, not handling step updates here
+    return this.prisma.studioWorkflow.update({ where: { id }, data: dto, include: { steps: true } });
+  }
+  async removeWorkflow(id: number): Promise<void> {
+    await this.prisma.studioWorkflow.delete({ where: { id } });
+  }
+
+  // --- StudioUIConfig CRUD (scaffold) ---
+  async findAllUIConfigs(): Promise<StudioUIConfig[]> {
+    return this.prisma.studioUIConfig.findMany();
+  }
+  async findUIConfig(id: number): Promise<StudioUIConfig> {
+    return this.prisma.studioUIConfig.findUnique({ where: { id } });
+  }
+  async createUIConfig(dto: CreateStudioUIConfigDto): Promise<StudioUIConfig> {
+    return this.prisma.studioUIConfig.create({ data: dto });
+  }
+  async updateUIConfig(id: number, dto: UpdateStudioUIConfigDto): Promise<StudioUIConfig> {
+    return this.prisma.studioUIConfig.update({ where: { id }, data: dto });
+  }
+  async removeUIConfig(id: number): Promise<void> {
+    await this.prisma.studioUIConfig.delete({ where: { id } });
   }
 }
